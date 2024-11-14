@@ -1,4 +1,5 @@
 import {
+    deleteClientService,
     getAllClientsService,
     getClientByIdService,
     registerClientService,

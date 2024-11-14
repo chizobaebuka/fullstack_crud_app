@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function ModalForm({ isOpen, onClose, mode, onSubmit }) {
+export default function ModalForm({ isOpen, onClose, mode, onSubmit, clientData }) {
     const [rate, setRate] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -11,11 +11,32 @@ export default function ModalForm({ isOpen, onClose, mode, onSubmit }) {
         setStatus(e.target.value === 'Active');
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // onSubmit();
-        onClose();
+        try {
+            const clientData = { name, email, job, rate: Number(rate), isactive: status };
+            onSubmit(clientData);
+            onClose();
+        } catch (err) {
+            console.error(`Error adding client: ${err.message}`);
+        }
     }
+
+    useEffect(() => {
+        if (mode === 'edit' && clientData) {
+            setName(clientData.name);
+            setEmail(clientData.email);
+            setJob(clientData.job);
+            setRate(clientData.rate);
+            setStatus(clientData.isactive);
+        } else {
+            setName('');
+            setEmail('');
+            setJob('');
+            setRate('');
+            setStatus(false);
+        }
+    }, [mode, clientData]);
 
     return (
         <>
